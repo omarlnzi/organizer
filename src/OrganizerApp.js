@@ -7,6 +7,8 @@ import reduxThunk from 'redux-thunk'
 
 import { composeWithDevTools } from 'remote-redux-devtools';
 import rootReducer from './reducers'
+import {YellowBox} from 'react-native';
+YellowBox.ignoreWarnings(['Warning: TimePickerAndroid', 'Warning: DatePickerAndroid', 'Setting a timer']);
 
 const store = createStore(rootReducer, composeWithDevTools(
 	applyMiddleware(reduxThunk)

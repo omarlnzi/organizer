@@ -2,6 +2,9 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import LoginScreen from './pages/LoginScreen';
 import Home from './pages/Home';
+import NewActivity from './pages/NewActivity';
+import CategoryScreen from './pages/CategoryScreen';
+import NewCategoryScreen from './pages/NewCategoryScreen';
 
 
 
@@ -12,6 +15,40 @@ const AppNavigator = createStackNavigator({
     //   title: 'Bem vindo',
     // },
   },
+
+  'Category': {
+    screen: CategoryScreen,
+
+    navigationOptions: ({ navigation }) => {
+      return ({
+        title: 'Categorias',
+        headerTitleStyle: {
+          color: 'white',
+          fontSize: 30,
+        }
+      })
+    }
+  },
+  'NewCategory': {
+    screen: NewCategoryScreen,
+
+    navigationOptions: ({ navigation }) => {
+      const { params } = navigation.state;
+      if (params && params.categoryToEdit) {
+        return {
+          title: params.categoryToEdit.title
+        }
+      }
+      return ({
+        title: 'Nova Categoria',
+        headerTitleStyle: {
+          color: 'white',
+          fontSize: 30,
+        }
+      })
+    }
+  },
+  
   'Home': {
     screen: Home,
 
@@ -25,7 +62,21 @@ const AppNavigator = createStackNavigator({
       })
     }
   },
+  'NewActivity': {
+    screen: NewActivity,
 
+    navigationOptions: ({ navigation }) => {
+      return ({
+        title: 'Nova atividade',
+        headerTitleStyle: {
+          color: 'white',
+          fontSize: 30,
+        }
+      })
+    }
+  },
+  
+ 
 
 
 }, {
