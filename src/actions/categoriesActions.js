@@ -20,3 +20,39 @@ export const loadCategories = () => {
       })
   }
 }
+
+export const deleteCategory = category => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      
+      Alert.alert(
+        'Exclusão',
+        `Deseja excluir a categoria ${category.title}?`,
+        [{
+          text: 'Não',
+          onPress: () => {
+            resolve(false);
+          },
+          style: 'cancel'
+        }, {
+          text: 'Sim',
+          onPress: async () => {
+            const { currentUser } = firebase.auth();
+
+            try {
+              await firebase
+                .database()
+                .ref(`/users/${currentUser.uid}/categories/${category.id}`)
+                .remove();
+              resolve(true);
+            } catch (error) {
+              console.log('AAAAAAAAAAAAAAAAAAAAAqui')
+              reject(e);
+            }
+          },
+        }],
+        { cancelable: false }
+      )
+    })
+  }
+}

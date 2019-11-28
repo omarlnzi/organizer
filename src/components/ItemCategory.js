@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
 
   },
   categoryTitle: {
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
     color: 'white',
     fontSize: 30,
     fontWeight: 'bold',

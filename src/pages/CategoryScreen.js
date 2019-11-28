@@ -58,7 +58,7 @@ class CategoryScreen extends React.Component {
                 :
                 <ItemCategory
                   category={item}
-                  onNavigate={() => this.props.navigation.navigate('NewCategory', { serieToEdit: item })}
+                  onNavigate={() => this.props.navigation.navigate('NewCategory', { categoryToEdit: item })}
                   // onNavigate={() => console.log("clicou")}
                 />
             );

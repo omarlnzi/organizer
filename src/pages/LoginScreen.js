@@ -143,6 +143,7 @@ class LoginScreen extends React.Component {
               leftIcon={this.setIcon('envelope')}
               label='Email'
               onChangeText={valor => { this.onChangeHandler('email', valor) }}
+              keyboardType = 'email-address'
             />
 
             <Input
@@ -156,6 +157,7 @@ class LoginScreen extends React.Component {
               leftIcon={this.setIcon('lock')}
               label='Senha'
               onChangeText={valor => { this.onChangeHandler('password', valor) }}
+    
             />
             {/* <View style={styles.ButtonLoginView}> */}
             {this.renderButton()}

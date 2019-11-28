@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import NewActivity from './pages/NewActivity';
 import CategoryScreen from './pages/CategoryScreen';
 import NewCategoryScreen from './pages/NewCategoryScreen';
+import { Alert } from 'react-native';
 
 
 
@@ -34,21 +35,28 @@ const AppNavigator = createStackNavigator({
 
     navigationOptions: ({ navigation }) => {
       const { params } = navigation.state;
+      console.log(params);
       if (params && params.categoryToEdit) {
+
         return {
-          title: params.categoryToEdit.title
+          title: "Editar Categoria",
+          headerTitleStyle: {
+            fontSize: 30,
+          }
         }
+      } else {
+        return ({
+          title: 'Nova Categoria',
+
+          headerTitleStyle: {
+            fontSize: 30,
+          }
+        })
+
       }
-      return ({
-        title: 'Nova Categoria',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 30,
-        }
-      })
     }
   },
-  
+
   'Home': {
     screen: Home,
 
@@ -75,8 +83,8 @@ const AppNavigator = createStackNavigator({
       })
     }
   },
-  
- 
+
+
 
 
 }, {
