@@ -14,11 +14,12 @@ const FormRow = (props) => {
 
 const styles = StyleSheet.create({
 	container:{
-		padding: 10,
+		padding: 5,
 		backgroundColor: 'white',
 		marginTop: 5,
 		marginBottom: 5,
 		elevation: 1,
+		// borderWidth:1,
 	}
 });
 

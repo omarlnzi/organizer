@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Picker, Text, Modal, Alert } from 'react-native';
-//import Home from '../screens/Home'
-import { Input, Button, } from 'react-native-elements';
+import { View, Button, TextInput, StyleSheet, Picker, Text, Modal, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { Input, } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-import ColorPalette from 'react-native-color-palette'
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -15,15 +11,7 @@ class NewActivity extends React.Component {
 		this.state = {
 			datainicial: "",
 			datafinal: "",
-			categoria: "",
-			selectedColor: "#C0392B",
-			modalVisible: false
 		};
-	}
-
-	setModalVisible(visible) {
-		this.setState({ modalVisible: visible });
-		Alert.alert('Modal has been changed.');
 	}
 
 	changeDateInicial = (valor) => {
@@ -37,104 +25,53 @@ class NewActivity extends React.Component {
 		})
 	}
 
-	mostrarDatas = () => {
-		console.log('-------');
-		console.log(this.state.datainicial, this.state.datafinal)
-		console.log('-------');
-	}
-
 	render() {
 		return (
-			<View style={styles.container}>
-				{/* <View>
-					<Modal>
-						<ColorPalette
-							//onChange={color => selectedColor = color}
-							value={this.state.selectedColor}
-							colors={['#C0392B', '#E74C3C', '#9B59B6', '#8E44AD', '#2980B9']}
-							title={"Controlled Color Palette:"}
-							icon={
-								<Icon name={'check-circle-o'} size={25} color={'black'} />
-								// React-Native-Vector-Icons Example
-							}
-						/>
-					</Modal>
-				</View> */}
-
-
-
-
-				<Input
-					//	style={styles.Input}
-					inputStyle={{ marginLeft: 10 }}
-					containerStyle={{
-						borderBottomColor: 'black',
-						marginRight: 10,
-						marginLeft: 10,
-						marginVertical: 5
-					}}
-					labelStyle={styles.labelStyle}
-					label='Titulo'
-				/>
-				<Input
-					//	style={styles.Input}
-					inputStyle={{ marginLeft: 10 }}
-					containerStyle={{
-						borderBottomColor: 'black',
-						marginRight: 10,
-						marginLeft: 10,
-						marginVertical: 5
-					}}
-					labelStyle={styles.labelStyle}
-					//	containerStyle={{ marginVertical: 10 }}
-					label='Descrição'
-				/>
-
+			<ScrollView style={{ paddingTop: 10 }}>
 				<View style={styles.containerH}>
-
-					<View style={styles.containerCombo}>
-						<Text style={styles.Text}>Inicio</Text>
-						<DatePicker
-							style={{ width: 200 }}
-							showIcon={false}
-							date={this.state.datainicial}
-							mode="datetime"
-							placeholder="select date"
-							format="DD/MM/YYYY hh:mm"
-							//confirmBtnText="Confirm"
-							//cancelBtnText="Cancel"
-							onDateChange={this.changeDateInicial}
-							is24Hour={true}
-							style={styles.dataComponent}
-						/>
-					</View>
-
-					<View style={styles.containerCombo}>
-						<Text style={styles.Text}>Fim</Text>
-						<DatePicker
-							showIcon = {false}
-							style={{width: 200}}
-							date={this.state.datafinal}
-							mode="datetime"
-							placeholder="select date"
-							format="DD/MM/YYYY hh:mm"
-							//confirmBtnText="Confirm"
-							//cancelBtnText="Cancel"
-							is24Hour = {true}
-							onDateChange={this.changeDateFinal}
-							style={styles.dataComponent}
-						/>	
-					</View>
-
-
-
+					<Input
+						label='Titulo'
+						labelStyle={{ color: 'black' }}
+					/>
 				</View>
 				<View style={styles.containerH}>
-					<View style={styles.containerCombo}>
-						<Text style={styles.Text}>Categoria</Text>
+					<Input
+						labelStyle={{ color: 'black' }}
+						label='Descrição'
+					/>
+				</View>
+				<View style={styles.containerH}>
+					<View style={styles.dataContainer}>
+						<Text style={styles.label}>Inicio</Text>
+						<DatePicker
+							date={this.state.datainicial}
+							onDateChange={this.changeDateInicial}
+							customStyles={dateStyle}
+							style={styles.dataComponent}
+							mode="datetime"
+							format="DD/MM/YYYY hh:mm"
+							is24Hour={true}
+						/>
+					</View>
+					<View style={styles.dataContainer}>
+						<Text style={styles.label}>Fim</Text>
+						<DatePicker
+							date={this.state.datafinal}
+							onDateChange={this.changeDateFinal}
+							customStyles={dateStyle}
+							style={styles.dataComponent}
+							mode="datetime"
+							format="DD/MM/YYYY hh:mm"
+							is24Hour={true}
+						/>
+					</View>
+				</View>
+				<View style={styles.containerH}>
+					<View style={styles.categoria}>
+						<Text style={styles.label}>Categoria</Text>
 						<Picker
 							selectedValue={this.state.categoria}
-							style={{ height: 50, width: 200 }}
+							style={styles.picker}
 							onValueChange={(itemValue, itemIndex) =>
 								this.setState({ categoria: itemValue })
 							}>
@@ -143,71 +80,72 @@ class NewActivity extends React.Component {
 							<Picker.Item label="Tarefas" value="estudo" />
 						</Picker>
 					</View>
-					<View style={styles.containerCombo}>
-
-						<Input
-							//	style={styles.Input}
-							//	inputStyle={{ marginLeft: 10 }}
-							containerStyle={{
-								borderBottomColor: 'black',
-								//marginRight:10,
-								//	marginLeft:10,
-								//	marginVertical: 5 
-							}}
-							labelStyle={styles.labelStyle}
-
-							//	containerStyle={{ marginVertical: 10 }}
-							label='cor a Definir'
-						// onChangeText ={() => {
-						// 	this.setModalVisible(true);
-						// }}
-						/>
+					<View style={styles.colorBox}>
+						<Text style={{ textAlignVertical: 'center', textAlign: 'center' }}>Cor</Text>
 					</View>
 				</View>
-
-				<View style={styles.ButtonNovoView}>
+				<View style={styles.contButton}>
 					<Button
-						buttonStyle={styles.loginButton}
-						titleStyle={styles.loginTextButton}
-						title="Salvar"
-						containerStyle={{ marginTop: 5, flex: 0, }}
-						// onPress={()=>this.mostrarDatas()}
-						// onPress={(parameters) => this.props.navigation.navigate('Home', parameters)}
+						title='Salvar'
+						// color="#FF0004"
+						onPress={async () => {
+							// this.setState({ isLoading: true });
+							try {
+								// await saveCategory(categoryForm);
+								// navigation.goBack();
+							} catch (error) {
+								// Alert.alert('Erro', error.message);
+							} finally {
+								// this.setState({ isLoading: false });
+							}
+						}}
 					/>
-
-
 				</View>
 
-
-
-			</View>
-
-
+			</ScrollView>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	dataComponent: {
+	vazio: {
 
+	},
+	contButton: {
+		width: '40%',
+		margin: 10,
+		alignSelf: 'center',
+
+
+	},
+	picker: {
+		marginLeft: 5,
+		// borderBottomWidth: 1,
+		// borderBottomColor: 'blue'
+	},
+	colorBox: {
 		flex: 1,
-		paddingTop: 10,
+		margin: 15,
+		borderWidth: 1,
+		backgroundColor: 'red',
+		borderColor: 'black',
+		borderRadius: 20
 
 	},
-	ButtonNovoView: {
-		//justifyContent: 'center',
-		alignItems: 'center',
-		flex: 3
+	dataComponent: {
+		width: '100%',
 
 	},
-	Text: {
+	label: {
 		color: 'black',
 		fontWeight: 'bold',
-		fontSize: 16,
+		paddingTop: 5,
+		fontSize: 17,
+		paddingLeft: 10
 	},
 
 	loginTextButton: {
-		fontSize: 16,
+		fontSize: 17,
 		color: 'white',
 		fontWeight: 'bold',
 	},
@@ -224,27 +162,104 @@ const styles = StyleSheet.create({
 	},
 	containerH: {
 		flex: 1,
-		//height: 100,
+		// height: 70,
 		flexDirection: 'row',
-		paddingTop: 10,
+		marginTop: 5,
 		marginRight: 10,
 		marginLeft: 10,
-		//borderWidth: 1,
-		//borderColor: 'black',
+		// borderWidth: 1,
+		// borderColor: 'red',
 
 	},
-	labelStyle: {
-		marginLeft: 10,
-		color: 'black',
+	categoria: {
+		flex: 4,
+		// flexDirection:'column'
+
 	},
-	containerCombo: {
+	dataContainer: {
 		flex: 1,
-
-		paddingLeft: 20,
-
 	},
 
 
+
+});
+
+const dateStyle = StyleSheet.create({
+	dateTouch: {
+		width: '100%',
+
+	},
+	dateTouchBody: {
+
+		flexDirection: 'row',
+		height: 40,
+		alignItems: 'flex-end',
+		justifyContent: 'flex-end'
+	},
+	dateIcon: {
+		width: 32,
+		height: 32,
+		marginLeft: 25,
+		marginRight: 5,
+		marginBottom: 5
+	},
+	dateInput: {
+		flex: 1,
+		height: 40,
+		borderWidth: 0,
+		borderBottomWidth: 1,
+		paddingLeft: 5,
+		marginLeft: 10,
+		alignItems: 'flex-start',
+		justifyContent: 'center'
+	},
+	dateText: {
+		color: '#333'
+	},
+	placeholderText: {
+		color: '#c9c9c9'
+	},
+	datePickerMask: {
+		flex: 1,
+		alignItems: 'flex-end',
+		flexDirection: 'row',
+		backgroundColor: '#00000077'
+	},
+	datePickerCon: {
+		backgroundColor: '#fff',
+		height: 0,
+		overflow: 'hidden'
+	},
+	btnText: {
+		position: 'absolute',
+		top: 0,
+		height: 42,
+		paddingHorizontal: 20,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	btnTextText: {
+		fontSize: 32,
+		color: 'black'
+	},
+	btnTextCancel: {
+		color: '#666'
+	},
+	btnCancel: {
+		left: 0
+	},
+	btnConfirm: {
+		right: 0
+	},
+	datePicker: {
+		marginTop: 42,
+		borderTopColor: '#ccc',
+		borderTopWidth: 1
+	},
+	disabled: {
+		backgroundColor: '#eee'
+	}
 });
 
 export default NewActivity;

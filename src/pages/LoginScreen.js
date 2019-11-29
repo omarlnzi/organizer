@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ImageBackground, KeyboardAvoidingView, ActivityIndicator, Text } from 'react-native';
 //import Home from '../screens/Home'
 
 import { Input, Button } from 'react-native-elements';
@@ -49,7 +49,7 @@ class LoginScreen extends React.Component {
     this.props.processLogin({ email, password })
       .then(user => {
         if (user) {
-          this.props.navigation.replace('Category');
+          this.props.navigation.replace('NewActivity');
         } else {
           this.setState({
             isLoading: false,
@@ -105,7 +105,7 @@ class LoginScreen extends React.Component {
 
   renderButton() {
     if (this.state.isLoading) {
-      return <ActivityIndicator />;
+      return(<View style={styles.contButton}><ActivityIndicator /></View>)
     } else {
       return (
 
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   contButton: {
     paddingTop: 10,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
 
   loginTextButton: {
