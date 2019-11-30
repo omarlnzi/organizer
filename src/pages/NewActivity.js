@@ -1,17 +1,36 @@
 import React, { Component } from 'react';
-import { View, Button, TextInput, StyleSheet, Picker, Text, Modal, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { View, Button, StyleSheet, Text, ActivityIndicator, Alert, SafeAreaView, ScrollView } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import { Input, } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-
-
-
+import moment from 'moment'
+import { connect } from 'react-redux';
+// import {setField} from '../actions/newActivityFormActions'
+import { setActivityField, saveActivity, setAllActivityFields, resetActivityForm, setField } from '../actions'; //falta delete
+import { loadCategories } from '../actions';
 class NewActivity extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			datainicial: "",
+			datainicial: '12/12/2020 14:50',
 			datafinal: "",
+			initialItem: false,
+			colorSelected: 'green',
+			isLoading: true
+
 		};
+	}
+	componentDidMount() {
+		this.props.loadCategories();
+		const { navigation, setAllActivityFields, resetActivityForm } = this.props;
+		const { params } = navigation.state;
+		if (params && params.activityToEdit) {
+			setAllActivityFields(params.activityToEdit);
+		} else {
+			resetActivityForm();
+
+		}
+
 	}
 
 	changeDateInicial = (valor) => {
@@ -19,49 +38,94 @@ class NewActivity extends React.Component {
 			datainicial: valor
 		})
 	}
+
 	changeDateFinal = (valor) => {
+
 		this.setState({
 			datafinal: valor
 		})
 	}
+	getColor(key) {
+		const cat = this.props.categories;
 
+		for (var i = 0; i < cat.length; i++) {
+			if (cat[i].id === key) {
+				return cat[i].color;
+			}
+		}
+	}
+
+	// const aaa ={}
+	// 	le aaa=[ 
+	// 		{ color: '#AD4ED8', id: '-LuiVq4n2STwh7omfV-u', title: 'Estudo' },
+	// 		{ color: '#5EB75E', id: '-LuiY8dtpGYpjXUY3ixX', title: 'Calculo' },
+	// 			{ color: '#FDF82F', id: '-LuiYP4rp09VUpjjjJeA', title: 'Compras' },
+	// 			{ color: '#4D775C', id: '-LuigLj7wKGGeT18LORJ', title: 'Olokinho' },
+	// 			{ color: '#CC0D41', id: '-LuigV-IwX9oM7xGXTpv', title: 'Ggghg' } 
+	// 	]
 	render() {
+
+		const { setActivityField, activityForm, saveActivity, navigation } = this.props;
+		if (this.props.categories === null) {
+			return <ActivityIndicator />
+		}
 		return (
-			<ScrollView style={{ paddingTop: 10 }}>
+
+			// <ScrollView nestedS	crollEnabled={true} style={{ paddingTop: 10 }}>
+			< ScrollView >
+
 				<View style={styles.containerH}>
 					<Input
 						label='Titulo'
 						labelStyle={{ color: 'black' }}
+						value={activityForm.title}
+						onChangeText={value => {
+							setActivityField('title', value)
+						}}
 					/>
 				</View>
+
+
 				<View style={styles.containerH}>
 					<Input
 						labelStyle={{ color: 'black' }}
 						label='Descrição'
+						value={activityForm.description}
+						onChangeText={value => {
+							setActivityField('description', value)
+						}}
 					/>
 				</View>
 				<View style={styles.containerH}>
 					<View style={styles.dataContainer}>
 						<Text style={styles.label}>Inicio</Text>
 						<DatePicker
-							date={this.state.datainicial}
-							onDateChange={this.changeDateInicial}
+							icon={false}
+							placeholder="Selecione a data"
+							// date={activityForm.startdate}
+							date={activityForm.startdate ? moment(activityForm.startdate).format('DD/MM/YYYY HH:mm') : ''}
+							onDateChange={value => {
+								setActivityField('startdate', moment(value.toString(), 'DD/MM/YYYY HH:mm').toISOString())
+							}}
 							customStyles={dateStyle}
 							style={styles.dataComponent}
 							mode="datetime"
-							format="DD/MM/YYYY hh:mm"
+							format="DD/MM/YYYY HH:mm"
 							is24Hour={true}
 						/>
 					</View>
 					<View style={styles.dataContainer}>
 						<Text style={styles.label}>Fim</Text>
 						<DatePicker
-							date={this.state.datafinal}
-							onDateChange={this.changeDateFinal}
+							date={activityForm.enddate ? moment(activityForm.enddate).format('DD/MM/YYYY HH:mm') : ''}
+							onDateChange={value => {
+								setActivityField('enddate', moment(value.toString(), 'DD/MM/YYYY HH:mm').toISOString())
+							}}
+							placeholder="Selecione a data"
 							customStyles={dateStyle}
 							style={styles.dataComponent}
 							mode="datetime"
-							format="DD/MM/YYYY hh:mm"
+							format="DD/MM/YYYY HH:mm"
 							is24Hour={true}
 						/>
 					</View>
@@ -69,40 +133,75 @@ class NewActivity extends React.Component {
 				<View style={styles.containerH}>
 					<View style={styles.categoria}>
 						<Text style={styles.label}>Categoria</Text>
-						<Picker
-							selectedValue={this.state.categoria}
-							style={styles.picker}
-							onValueChange={(itemValue, itemIndex) =>
-								this.setState({ categoria: itemValue })
-							}>
-							<Picker.Item label="Aula" value="aula" />
-							<Picker.Item label="Estudo" value="estudo" />
-							<Picker.Item label="Tarefas" value="estudo" />
-						</Picker>
+						<RNPickerSelect
+							items={[...this.props.comboData, { label: 'Adicionar Categoria', value: 'new' }]}
+							placeholder={{ label: 'Selecione', value: 'default' }}
+							onValueChange={(value, index) => {
+								if (value == 'new') {
+									this.props.navigation.navigate('NewCategory')
+								} else {
+									setActivityField('categoryid', value)
+									this.setState({
+										colorSelected: this.getColor(value)
+									})
+								}
+							}}
+							style={{ fontSize: 17, placeholder: { color: 'black' } }}
+						// value={activityForm.categoryid}
+
+						/>
 					</View>
-					<View style={styles.colorBox}>
-						<Text style={{ textAlignVertical: 'center', textAlign: 'center' }}>Cor</Text>
+					<View style={[styles.colorBox, {
+						backgroundColor: this.state.colorSelected,
+						justifyContent: 'center',
+
+
+					}]}>
+						<Text style={{
+							textAlignVertical: 'center', textAlign: 'center',
+							textShadowColor: 'black',
+							textShadowOffset: { width: -1, height: 1 },
+							textShadowRadius: 10,
+							color: 'white',
+							// fontWeight:'bold',
+							fontSize: 20
+						}}>Cor</Text>
 					</View>
 				</View>
+
 				<View style={styles.contButton}>
+
 					<Button
 						title='Salvar'
-						// color="#FF0004"
+
+						// onPress={() => {
+						// 	console.log('clicou');
+
+						// 	// console.log(this.props.categories);
+						// 	console.log(activityForm);
+						// }}
 						onPress={async () => {
-							// this.setState({ isLoading: true });
+							console.log(activityForm)
+							this.setState({ isLoading: true });
 							try {
-								// await saveCategory(categoryForm);
-								// navigation.goBack();
+								await saveActivity(activityForm);
+								navigation.goBack();
 							} catch (error) {
-								// Alert.alert('Erro', error.message);
+								Alert.alert('Erro', error.message);
 							} finally {
-								// this.setState({ isLoading: false });
+								this.setState({ isLoading: false });
 							}
 						}}
 					/>
 				</View>
 
-			</ScrollView>
+
+
+
+
+			</ScrollView >
+
+
 		);
 	}
 }
@@ -110,6 +209,14 @@ class NewActivity extends React.Component {
 const styles = StyleSheet.create({
 	vazio: {
 
+	},
+
+	inputAndroid: {
+		fontWeight: 'bold',
+		borderRadius: 8,
+		color: 'black',
+		borderWidth: 0.5,
+		borderColor: 'purple',
 	},
 	contButton: {
 		width: '40%',
@@ -127,7 +234,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		margin: 15,
 		borderWidth: 1,
-		backgroundColor: 'red',
+		backgroundColor: 'white',
 		borderColor: 'black',
 		borderRadius: 20
 
@@ -161,7 +268,7 @@ const styles = StyleSheet.create({
 
 	},
 	containerH: {
-		flex: 1,
+		// flex: 1,
 		// height: 70,
 		flexDirection: 'row',
 		marginTop: 5,
@@ -262,4 +369,31 @@ const dateStyle = StyleSheet.create({
 	}
 });
 
-export default NewActivity;
+const mapStateToProps = state => {
+	const { listaCategorias } = state;
+
+
+	if (listaCategorias === null) {
+		return { categories: listaCategorias, activityForm: state.activityForm };
+	}
+
+	const keys = Object.keys(listaCategorias);
+	const listaCategoriesWithId = keys.map(key => {
+		return { ...listaCategorias[key], id: key }
+	})
+	const keys2 = Object.keys(listaCategoriesWithId);
+	const itemsList = keys2.map(key => {
+		return { ...listaCategoriesWithId[key], label: listaCategoriesWithId[key].title, value: listaCategoriesWithId[key].id }
+	})
+
+	return { categories: listaCategoriesWithId, activityForm: state.activityForm, comboData: itemsList }
+}
+const mapDispatchToProps = {
+	setActivityField,
+	saveActivity,
+	setAllActivityFields,
+	resetActivityForm,
+	// deleteActivity,
+	loadCategories
+}
+export default connect(mapStateToProps, mapDispatchToProps)(NewActivity);

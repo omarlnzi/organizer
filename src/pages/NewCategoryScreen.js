@@ -69,7 +69,7 @@ class NewCategoryScreen extends React.Component {
   renderDeleteButton() {
     if (this.state.isEditing && !this.state.isLoading) {
       const { categoryToEdit } = this.props.navigation.state.params;
-      console.log(categoryToEdit);
+
       return (
         <View style={styles.contButton}>
           <Button

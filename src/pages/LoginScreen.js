@@ -49,7 +49,7 @@ class LoginScreen extends React.Component {
     this.props.processLogin({ email, password })
       .then(user => {
         if (user) {
-          this.props.navigation.replace('NewActivity');
+          this.props.navigation.replace('Home');
         } else {
           this.setState({
             isLoading: false,

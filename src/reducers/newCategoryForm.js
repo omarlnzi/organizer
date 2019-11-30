@@ -13,7 +13,7 @@ export default function (state = INITIAL_STATE, action) {
     case CATEGORY_SAVED_SUCCESS:
       return INITIAL_STATE;
     case SET_ALL_FIELDS:
-      return action.serie;
+      return action.category;
     case RESET_CATEGORY_FORM:
       return INITIAL_STATE;
     default:

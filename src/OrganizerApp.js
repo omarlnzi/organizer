@@ -14,10 +14,10 @@ const store = createStore(rootReducer, composeWithDevTools(
 	applyMiddleware(reduxThunk)
 ));
 
-const SeriesApp = prop => (
+const OrganizerApp = prop => (
 	<Provider store={store}>
 		<Router />
 	</Provider>
 )
 
-export default SeriesApp;
+export default OrganizerApp;

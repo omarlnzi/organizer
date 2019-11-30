@@ -16,9 +16,9 @@ export const categorySavedSuccess = () => {
   return { type: CATEGORY_SAVED_SUCCESS }
 };
 
-export const setAllFields = serie => ({
+export const setAllFields = category => ({
   type: SET_ALL_FIELDS,
-  serie: serie
+  category: category
 });
 
 export const resetCategoryForm = () => ({

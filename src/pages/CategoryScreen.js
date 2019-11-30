@@ -5,34 +5,6 @@ import AddCategory from '../components/AddCategory'
 import { connect } from 'react-redux';
 import { loadCategories } from '../actions';
 
-const itemDATA = [
-  {
-    id: '1',
-    title: 'Faculdade',
-    color: '#7FFF00'
-  },
-  {
-    id: '2',
-    title: 'Prova',
-    color: '#00BFFF'
-  },
-  {
-    id: '3',
-    title: 'Compras',
-    color: '#F08080'
-  },
-  {
-    id: '4',
-    title: 'Estudo',
-    color: 'black'
-  },
-  {
-    id: '5',
-    title: 'Estudo',
-    color: 'white'
-  },
-];
-
 class CategoryScreen extends React.Component {
   componentDidMount(){
 		this.props.loadCategories();

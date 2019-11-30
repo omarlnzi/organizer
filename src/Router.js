@@ -10,6 +10,13 @@ import { Alert } from 'react-native';
 
 
 const AppNavigator = createStackNavigator({
+  'Login': {
+    screen: LoginScreen,
+    // navigationOptions: {
+    //   title: 'Bem vindo',
+    // },
+  },
+
   'NewActivity': {
     screen: NewActivity,
 
@@ -23,14 +30,25 @@ const AppNavigator = createStackNavigator({
       })
     }
   },
-  'Login': {
-    screen: LoginScreen,
-    // navigationOptions: {
-    //   title: 'Bem vindo',
-    // },
-  },
+  
   
 
+  'Home': {
+    screen: Home,
+
+    navigationOptions: ({ navigation }) => {
+      return ({
+        title: 'Home',
+        headerTitleStyle: {
+          color: 'white',
+          fontSize: 30,
+        }
+      })
+    }
+  },
+
+
+  
   'Category': {
     screen: CategoryScreen,
 
@@ -70,21 +88,6 @@ const AppNavigator = createStackNavigator({
       }
     }
   },
-
-  'Home': {
-    screen: Home,
-
-    navigationOptions: ({ navigation }) => {
-      return ({
-        title: 'Home',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 30,
-        }
-      })
-    }
-  },
-  
 }, {
   defaultNavigationOptions: {
     title: 'Timeline',
