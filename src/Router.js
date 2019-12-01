@@ -12,26 +12,36 @@ import { Alert } from 'react-native';
 const AppNavigator = createStackNavigator({
   'Login': {
     screen: LoginScreen,
-    // navigationOptions: {
-    //   title: 'Bem vindo',
-    // },
+
   },
 
   'NewActivity': {
     screen: NewActivity,
 
     navigationOptions: ({ navigation }) => {
-      return ({
-        title: 'Nova atividade',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 30,
+      const { params } = navigation.state;
+     
+      if (params && params.activityToEdit) {
+
+        return {
+          title: "Editar Atividade",
+          headerTitleStyle: {
+            fontSize: 30,
+          }
         }
-      })
+      } else {
+        return ({
+          title: 'Nova Categoria',
+
+          headerTitleStyle: {
+            fontSize: 30,
+          }
+        })
+      }
     }
   },
-  
-  
+
+
 
   'Home': {
     screen: Home,
@@ -48,7 +58,7 @@ const AppNavigator = createStackNavigator({
   },
 
 
-  
+
   'Category': {
     screen: CategoryScreen,
 
@@ -67,7 +77,7 @@ const AppNavigator = createStackNavigator({
 
     navigationOptions: ({ navigation }) => {
       const { params } = navigation.state;
-      console.log(params);
+
       if (params && params.categoryToEdit) {
 
         return {
@@ -84,7 +94,6 @@ const AppNavigator = createStackNavigator({
             fontSize: 30,
           }
         })
-
       }
     }
   },

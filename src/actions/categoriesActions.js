@@ -46,7 +46,7 @@ export const deleteCategory = category => {
                 .remove();
               resolve(true);
             } catch (error) {
-              console.log('AAAAAAAAAAAAAAAAAAAAAqui')
+
               reject(e);
             }
           },

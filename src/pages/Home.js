@@ -5,23 +5,28 @@ import FloatButton from "../components/FloatButton";
 import { connect } from 'react-redux';
 import { loadActivities, loadCategories } from '../actions';
 import moment from 'moment'
+import { FAB, Portal, Provider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 class Home extends React.Component {
 	constructor() {
 		super()
-		this.data = [
-			{ id: '3', datetime: '12/12/2009 12:11', time: '08:00', title: 'Estudar para Prova', description: 'Calculo ' },
-			{ time: '10:30', title: 'Mercado', description: 'Comprar: Café, Energético' },
-			{ time: '19:30', title: 'IF68X - A040', description: 'Aula de Jogos digitais', lineColor: 'green', circleColor: 'green' },
-			{ time: '21:20', title: 'AS35A - I201', description: 'Aula Programação Móvel', lineColor: 'green', circleColor: 'green' },
-			{ time: '', title: 'Dia 26/09', lineColor: 'red', circleColor: 'red' },
-			{ time: '08:00', title: 'Estudar para Prova', description: 'Calculo ' },
-			{ time: '10:30', title: 'Mercado', description: 'Comprar: Café, Energético' },
-			{ time: '19:30', title: 'IF68X - A040', description: 'Aula de Jogos digitais', lineColor: 'green', circleColor: 'green' },
-			{ time: '21:20', title: 'AS35A - I201', description: 'Aula Programação Móvel', lineColor: 'green', circleColor: 'green' },
-			{ time: '', title: 'Dia 26/09', lineColor: 'red', circleColor: 'red' },
-		]
+		this.state = {
+			open: false,
+		},
+			this.data = [
+				{ id: '3', datetime: '12/12/2009 12:11', time: '08:00', title: 'Estudar para Prova', description: 'Calculo ' },
+				{ time: '10:30', title: 'Mercado', description: 'Comprar: Café, Energético' },
+				{ time: '19:30', title: 'IF68X - A040', description: 'Aula de Jogos digitais', lineColor: 'green', circleColor: 'green' },
+				{ time: '21:20', title: 'AS35A - I201', description: 'Aula Programação Móvel', lineColor: 'green', circleColor: 'green' },
+				{ time: '', title: 'Dia 26/09', lineColor: 'red', circleColor: 'red' },
+				{ time: '08:00', title: 'Estudar para Prova', description: 'Calculo ' },
+				{ time: '10:30', title: 'Mercado', description: 'Comprar: Café, Energético' },
+				{ time: '19:30', title: 'IF68X - A040', description: 'Aula de Jogos digitais', lineColor: 'green', circleColor: 'green' },
+				{ time: '21:20', title: 'AS35A - I201', description: 'Aula Programação Móvel', lineColor: 'green', circleColor: 'green' },
+				{ time: '', title: 'Dia 26/09', lineColor: 'red', circleColor: 'red' },
+			]
 	}
 
 	componentDidMount() {
@@ -39,88 +44,112 @@ class Home extends React.Component {
 		}
 	}
 	createData() {
-		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+		
 		if (this.props.categories && this.props.activities) {
-			[]
+			console.log('chamou?????????????')
 			const activities = [...this.props.activities]
-			const categories = [...this.props.categories]
-			// console.log('---------------------',activities,categories )
-			
 			const keys = Object.keys(activities);
 			const agoravai = keys.map(key => {
 				var color = this.getColor(activities[key].categoryid)
 				var time = moment(activities[key].startdate).format('HH:mm')
-
-				return { ...activities[key], circleColor: color, lineColor: color, time: time }
+				return { ...activities[key], circleColor: color, lineColor: color, time: time, activity: { ...activities[key] } }
 			})
-			var currentdata = moment(agoravai[0].startdate)
-			console.log(moment(currentdata).format('DD/MM/YYYY'))
+
 			var intermediario = [];
-			intermediario.push({time: '', title: moment(currentdata).format('DD/MM/YYYY'), lineColor: 'red', circleColor: 'red', id:'0' })
-			for (var i = 0; i <agoravai.length; i++) {	
-				var t = moment(agoravai).format('HH:mm');
-				var {title, lineColor, circleColor, time, description} = agoravai[i];
-				if (moment(currentdata).isSame(agoravai[i].startdate, 'day')) {
+			if (typeof agoravai !== 'undefined' && agoravai.length > 0) {
+				var currentdata = moment(agoravai[0].startdate)
+				var i = 0;
+				do{
+					var { title, lineColor, circleColor, time, description, activity } = agoravai[i];
+					
+					if (!(moment(currentdata).isSame(activity.startdate, 'day')) || i==0) {
+						var date = moment(activity.startdate).format('LL')
+						intermediario.push({ time: '', title: date, lineColor: 'black', circleColor: 'black', id: '-1' })
+						currentdata = activity.startdate
+					}
+					intermediario.push({ activity, description, title, time, lineColor, circleColor });
+					i++;
+				}while(i<agoravai.length)
 
-					intermediario.push({description,time, title, lineColor, circleColor});
-				
-				} else {
-					date=moment(agoravai[i].startdate).format('DD/MM/YYYY')
-					intermediario.push({time, title: date, lineColor: 'red', circleColor: 'red'})
-					intermediario.push({description,time, title, lineColor, circleColor});
-					currentdata=agoravai[i].startdate
-				}
 			}
-
-
-
-			console.log('intermediario: ',intermediario)
-			console.log('agiravai: ',agoravai)
-			// const newData =[...activities[k],{color: getColor(activities[k].categoryid)}]; 
-
 			return intermediario
 		}
 	}
+
 	render() {
 		// const { activity } = this.props.navigation.state.params;
 
 		if (!(this.props.activities)) {
-			return (<FloatButton
-				onPress={() => this.props.navigation.navigate('NewActivity')}
-			/>)
+			return (
+				<Provider>
+					<Portal  >
+						<FAB.Group
+							open={this.state.open}
+							icon={this.state.open ? 'close' : 'plus'}
+							actions={[
+								{ icon: 'tag', label: 'Categorias', onPress: () => this.props.navigation.navigate('Category') },
+								{ icon: 'calendar', label: 'Atividades', onPress: () => this.props.navigation.navigate('NewActivity') },
+							]}
+							onStateChange={({ open }) => this.setState({ open })}
+							onPress={() => {
+								if (this.state.open) {
+									// do something if the speed dial is open
+								}
+							}}
+						/>
+					</Portal>
+				</Provider>
+			)
 		}
-
 		return (
 			<View style={styles.container}>
-				<Timeline
-					style={styles.list}
-					data={this.createData()}
-					onEventPress={(event) => {
+				<Provider>
+					<Portal>
 
-						// console.log(event);
-						// console.log(this.props.timelineData)
-						// Alert.alert('clik')
-						// this.props.navigation.navigate('NewActivity', { activityToEdit: activity });
-					}}
-					separator={true}
+						<Timeline
+							timeStyle={styles.time}
+							timeContainerStyle={{ minWidth: 40 }}
+							separatorStyle={{ marginBottom: 0 }}
+							data={this.createData()}
+							circleSize={20}
+							renderFullLine={true}
+							onEventPress={(event) => {
+								// console.log(event);
+
+								// console.log(this.props.timelineData)
+								// Alert.alert('clik')
+								if (event.id !== '-1') {
+									this.props.navigation.navigate('NewActivity', { activityToEdit: event.activity });
+								}
+
+							}}
+							separator={true}
+						/>
 
 
-				/>
-				<View>
-					{/* <Button
-					
-						title="NOVO"
-						containerStyle={{ marginTop: 32, flex: 0,  }}
-						buttonStyle={styles.NovoButton}
-						titleStyle={styles.NovoTextButton}
-						onPress={(parameters)=> this.props.navigation.navigate('Novo', parameters)}
-					/> */}
+						<FAB.Group
+							open={this.state.open}
+							icon={this.state.open ? 'close' : 'plus'}
+							actions={[
+								{ icon: 'tag', label: 'Categorias', onPress: () => this.props.navigation.navigate('Category') },
+								{ icon: 'calendar', label: 'Atividades', onPress: () => this.props.navigation.navigate('NewActivity') },
+							]}
+							onStateChange={({ open }) => this.setState({ open })}
+							onPress={() => {
+								if (this.state.open) {
+									// do something if the speed dial is open
+								}
+							}}
+						/>
+					</Portal>
+				</Provider>
 
-
-				</View>
+				{/* 
 				<FloatButton
 					onPress={() => this.props.navigation.navigate('NewActivity')}
-				/>
+				/> */}
+
+
 
 			</View>
 		);
@@ -138,23 +167,29 @@ const mapStateToProps = state => {
 	if (listaCategorias === null) {
 		return { categories: listaCategorias };
 	}
-
-
-	const keys = Object.keys(listaAtividades);
-	const listaActivitiesWithId = keys.map(key => {
-		return { ...listaAtividades[key], id: key }
-	})
 	const keys2 = Object.keys(listaCategorias);
 	const listaCategoriasWithId = keys2.map(key => {
 		return { ...listaCategorias[key], id: key }
 	})
-
-	return { activities: listaActivitiesWithId, categories: listaCategoriasWithId }
+	// console.log(listaActivitiesWithId)
+	// const timelineData = this.createData();
+	return { activities: listaAtividades, categories: listaCategoriasWithId }
 }
 
 export default connect(mapStateToProps, { loadActivities, loadCategories })(Home);
 
 const styles = StyleSheet.create({
+	time: {
+		textAlign: 'center',
+		// backgroundColor:'#ff9797', 
+		// color:'white', 
+		fontWeight: 'bold',
+		fontSize: 15,
+		// padding:5, 
+		// borderRadius:13, 
+		// paddingTop: 10,
+		overflow: 'hidden'
+	},
 	ButtonNovoView: {
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -165,6 +200,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	NovoButton: {
+
 		backgroundColor: '#008B8B',
 		borderRadius: 10,
 		height: 50,
@@ -174,7 +210,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingLeft: 5,
 		paddingRight: 5,
-
+		marginTop: 10,
 		backgroundColor: 'white'
 	},
 	list: {

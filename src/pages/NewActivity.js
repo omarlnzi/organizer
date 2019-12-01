@@ -6,16 +6,14 @@ import DatePicker from 'react-native-datepicker';
 import moment from 'moment'
 import { connect } from 'react-redux';
 // import {setField} from '../actions/newActivityFormActions'
-import { setActivityField, saveActivity, setAllActivityFields, resetActivityForm, setField } from '../actions'; //falta delete
+import { setActivityField, saveActivity, setAllActivityFields, resetActivityForm, deleteActivity } from '../actions'; //falta delete
 import { loadCategories } from '../actions';
 class NewActivity extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			datainicial: '12/12/2020 14:50',
-			datafinal: "",
-			initialItem: false,
-			colorSelected: 'green',
+			isEditing: false,
+			colorSelected: 'white',
 			isLoading: true
 
 		};
@@ -26,25 +24,54 @@ class NewActivity extends React.Component {
 		const { params } = navigation.state;
 		if (params && params.activityToEdit) {
 			setAllActivityFields(params.activityToEdit);
+			this.setState({
+				colorSelected: this.getColor(params.activityToEdit.categoryid),
+				isEditing: true
+			})
 		} else {
 			resetActivityForm();
-
+			this.setState({
+				isEditing: false
+			})
 		}
 
 	}
 
-	changeDateInicial = (valor) => {
-		this.setState({
-			datainicial: valor
-		})
+	// changeDateInicial = (valor) => {
+	// 	this.setState({
+	// 		datainicial: valor
+	// 	})
+	// }
+
+	// changeDateFinal = (valor) => {
+
+	// 	this.setState({
+	// 		datafinal: valor
+	// 	})
+	// }
+	renderDeleteButton() {
+		if (this.state.isEditing) {
+			const { activityToEdit } = this.props.navigation.state.params;
+
+			return (
+				<View style={styles.contButton}>
+					<Button
+						title="Excluir"
+						color="#FF0004"
+						onPress={async () => {
+							console.log(activityToEdit)
+							const hasDeleted = await this.props.deleteActivity(activityToEdit);
+							if (hasDeleted) {
+								this.props.navigation.goBack();
+							}
+						
+						}}
+					/>
+				</View>
+			)
+		}
 	}
 
-	changeDateFinal = (valor) => {
-
-		this.setState({
-			datafinal: valor
-		})
-	}
 	getColor(key) {
 		const cat = this.props.categories;
 
@@ -55,14 +82,6 @@ class NewActivity extends React.Component {
 		}
 	}
 
-	// const aaa ={}
-	// 	le aaa=[ 
-	// 		{ color: '#AD4ED8', id: '-LuiVq4n2STwh7omfV-u', title: 'Estudo' },
-	// 		{ color: '#5EB75E', id: '-LuiY8dtpGYpjXUY3ixX', title: 'Calculo' },
-	// 			{ color: '#FDF82F', id: '-LuiYP4rp09VUpjjjJeA', title: 'Compras' },
-	// 			{ color: '#4D775C', id: '-LuigLj7wKGGeT18LORJ', title: 'Olokinho' },
-	// 			{ color: '#CC0D41', id: '-LuigV-IwX9oM7xGXTpv', title: 'Ggghg' } 
-	// 	]
 	render() {
 
 		const { setActivityField, activityForm, saveActivity, navigation } = this.props;
@@ -138,7 +157,7 @@ class NewActivity extends React.Component {
 							placeholder={{ label: 'Selecione', value: 'default' }}
 							onValueChange={(value, index) => {
 								if (value == 'new') {
-									this.props.navigation.navigate('NewCategory')
+									this.props.navigation.navigate('NewCategory', {origin: 'newActivity'})
 								} else {
 									setActivityField('categoryid', value)
 									this.setState({
@@ -147,7 +166,7 @@ class NewActivity extends React.Component {
 								}
 							}}
 							style={{ fontSize: 17, placeholder: { color: 'black' } }}
-						// value={activityForm.categoryid}
+							value={activityForm.categoryid}
 
 						/>
 					</View>
@@ -170,35 +189,34 @@ class NewActivity extends React.Component {
 				</View>
 
 				<View style={styles.contButton}>
-
+					{this.renderDeleteButton()}
 					<Button
 						title='Salvar'
-
-						// onPress={() => {
-						// 	console.log('clicou');
-
-						// 	// console.log(this.props.categories);
-						// 	console.log(activityForm);
-						// }}
 						onPress={async () => {
-							console.log(activityForm)
-							this.setState({ isLoading: true });
-							try {
-								await saveActivity(activityForm);
-								navigation.goBack();
-							} catch (error) {
-								Alert.alert('Erro', error.message);
-							} finally {
-								this.setState({ isLoading: false });
+							// console.log(activityForm)
+							if (activityForm.title == '' || activityForm.description == '') {
+								Alert.alert('Aviso', 'Verifique se todos os campos estão preenchidos')
+							} else if (activityForm.enddate == '' || activityForm.startdate == '') {
+								Alert.alert('Aviso', 'Escolha a data');
+							} else if (activityForm.categoryid == 'default' || activityForm.categoryid == '') {
+								Alert.alert('Aviso', 'Selecione uma categoria');
+							} else {
+								this.setState({ isLoading: true });
+								try {
+									await saveActivity(activityForm);
+									navigation.goBack();
+								} catch (error) {
+									Alert.alert('Erro', error.message);
+								} finally {
+									this.setState({ isLoading: false });
+								}
 							}
+
 						}}
 					/>
+
+					
 				</View>
-
-
-
-
-
 			</ScrollView >
 
 
@@ -306,8 +324,8 @@ const dateStyle = StyleSheet.create({
 	dateIcon: {
 		width: 32,
 		height: 32,
-		marginLeft: 25,
-		marginRight: 5,
+		// marginLeft: 5,
+		// marginRight: 5,
 		marginBottom: 5
 	},
 	dateInput: {
@@ -315,7 +333,7 @@ const dateStyle = StyleSheet.create({
 		height: 40,
 		borderWidth: 0,
 		borderBottomWidth: 1,
-		paddingLeft: 5,
+		// paddingLeft: 5,
 		marginLeft: 10,
 		alignItems: 'flex-start',
 		justifyContent: 'center'
@@ -393,7 +411,7 @@ const mapDispatchToProps = {
 	saveActivity,
 	setAllActivityFields,
 	resetActivityForm,
-	// deleteActivity,
+	deleteActivity,
 	loadCategories
 }
 export default connect(mapStateToProps, mapDispatchToProps)(NewActivity);

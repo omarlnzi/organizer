@@ -144,6 +144,7 @@ class LoginScreen extends React.Component {
               label='Email'
               onChangeText={valor => { this.onChangeHandler('email', valor) }}
               keyboardType = 'email-address'
+              autoCapitalize='none'
             />
 
             <Input

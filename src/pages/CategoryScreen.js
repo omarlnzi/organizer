@@ -51,11 +51,12 @@ const mapStateToProps = state => {
 	if (listaCategorias === null){
 		return {categories: listaCategorias};
 	}
-
+  // console.log("sem id???????",listaCategorias)
 	const keys = Object.keys(listaCategorias);
 	const listaCategoriesWithId = keys.map(key =>{
 		return {...listaCategorias[key], id: key}
-	})
+  })
+  console.log(listaCategoriesWithId)
 	return {categories: listaCategoriesWithId}
 }
 
