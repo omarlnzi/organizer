@@ -18,6 +18,9 @@ class NewActivity extends React.Component {
 
 		};
 	}
+
+
+
 	componentDidMount() {
 		this.props.loadCategories();
 		const { navigation, setAllActivityFields, resetActivityForm } = this.props;
@@ -36,19 +39,6 @@ class NewActivity extends React.Component {
 		}
 
 	}
-
-	// changeDateInicial = (valor) => {
-	// 	this.setState({
-	// 		datainicial: valor
-	// 	})
-	// }
-
-	// changeDateFinal = (valor) => {
-
-	// 	this.setState({
-	// 		datafinal: valor
-	// 	})
-	// }
 	renderDeleteButton() {
 		if (this.state.isEditing) {
 			const { activityToEdit } = this.props.navigation.state.params;
@@ -64,7 +54,7 @@ class NewActivity extends React.Component {
 							if (hasDeleted) {
 								this.props.navigation.goBack();
 							}
-						
+
 						}}
 					/>
 				</View>
@@ -81,6 +71,12 @@ class NewActivity extends React.Component {
 			}
 		}
 	}
+	// onSelect = data => {
+	// 	console.log(data)
+	// 	// this.setState(data)
+	// 	this.props.setActivityField('categoryid',data)
+
+	// }
 
 	render() {
 
@@ -157,7 +153,7 @@ class NewActivity extends React.Component {
 							placeholder={{ label: 'Selecione', value: 'default' }}
 							onValueChange={(value, index) => {
 								if (value == 'new') {
-									this.props.navigation.navigate('NewCategory', {origin: 'newActivity'})
+									this.props.navigation.navigate('NewCategory')
 								} else {
 									setActivityField('categoryid', value)
 									this.setState({
@@ -188,34 +184,36 @@ class NewActivity extends React.Component {
 					</View>
 				</View>
 
-				<View style={styles.contButton}>
-					{this.renderDeleteButton()}
-					<Button
-						title='Salvar'
-						onPress={async () => {
-							// console.log(activityForm)
-							if (activityForm.title == '' || activityForm.description == '') {
-								Alert.alert('Aviso', 'Verifique se todos os campos estão preenchidos')
-							} else if (activityForm.enddate == '' || activityForm.startdate == '') {
-								Alert.alert('Aviso', 'Escolha a data');
-							} else if (activityForm.categoryid == 'default' || activityForm.categoryid == '') {
-								Alert.alert('Aviso', 'Selecione uma categoria');
-							} else {
-								this.setState({ isLoading: true });
-								try {
-									await saveActivity(activityForm);
-									navigation.goBack();
-								} catch (error) {
-									Alert.alert('Erro', error.message);
-								} finally {
-									this.setState({ isLoading: false });
+				<View style={styles.viewButtons}>
+					<View style={styles.contButton}>
+						<Button
+							title='Salvar'
+							color='#008B8B'
+							onPress={async () => {
+								// console.log(activityForm)
+								if (activityForm.title == '' || activityForm.description == '') {
+									Alert.alert('Aviso', 'Verifique se todos os campos estão preenchidos')
+								} else if (activityForm.enddate == '' || activityForm.startdate == '') {
+									Alert.alert('Aviso', 'Escolha a data');
+								} else if (activityForm.categoryid == 'default' || activityForm.categoryid == '') {
+									Alert.alert('Aviso', 'Selecione uma categoria');
+								} else {
+									this.setState({ isLoading: true });
+									try {
+										await saveActivity(activityForm);
+										navigation.goBack();
+									} catch (error) {
+										Alert.alert('Erro', error.message);
+									} finally {
+										this.setState({ isLoading: false });
+									}
 								}
-							}
+							}}
+						/>
 
-						}}
-					/>
+					</View>
+					{this.renderDeleteButton()}
 
-					
 				</View>
 			</ScrollView >
 
@@ -228,7 +226,14 @@ const styles = StyleSheet.create({
 	vazio: {
 
 	},
-
+	viewButtons: {
+		// flex: 1,
+		// alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: "row",
+		// borderWidth: 1,
+		// borderColor: 'red',
+	},
 	inputAndroid: {
 		fontWeight: 'bold',
 		borderRadius: 8,
@@ -239,9 +244,8 @@ const styles = StyleSheet.create({
 	contButton: {
 		width: '40%',
 		margin: 10,
-		alignSelf: 'center',
-
-
+		// borderWidth: 1,
+		// borderColor: 'red',
 	},
 	picker: {
 		marginLeft: 5,

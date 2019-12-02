@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { connect } from 'react-redux';
 import { setField, saveCategory, setAllFields, resetCategoryForm, deleteCategory } from '../actions';
+import { NavigationEvents } from 'react-navigation';
 
 class NewCategoryScreen extends React.Component {
   constructor(props) {
@@ -88,8 +89,10 @@ class NewCategoryScreen extends React.Component {
   }
 
   render() {
+    
     const { setField, categoryForm, saveCategory, navigation } = this.props;
     return (
+
       <View>
         <FormRow>
           <TextInput
@@ -123,11 +126,12 @@ class NewCategoryScreen extends React.Component {
               <View style={styles.contButton}>
                 <Button
                   title='Salvar'
+                  color='#008B8B'
                   onPress={async () => {
                     this.setState({ isLoading: true });
                     try {
-                      await saveCategory(categoryForm);
-                      navigation.goBack();
+                      await saveCategory(categoryForm)
+                      navigation.goBack();                                       
                     } catch (error) {
                       Alert.alert('Erro', error.message);
                     } finally {
@@ -169,6 +173,8 @@ const styles = StyleSheet.create({
   viewButtons:{
     // flex: 1,
     // alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'red',
     justifyContent: 'center',
     flexDirection: "row"
   },

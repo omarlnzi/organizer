@@ -44,7 +44,7 @@ class Home extends React.Component {
 		}
 	}
 	createData() {
-		
+
 		if (this.props.categories && this.props.activities) {
 			console.log('chamou?????????????')
 			const activities = [...this.props.activities]
@@ -59,17 +59,17 @@ class Home extends React.Component {
 			if (typeof agoravai !== 'undefined' && agoravai.length > 0) {
 				var currentdata = moment(agoravai[0].startdate)
 				var i = 0;
-				do{
+				do {
 					var { title, lineColor, circleColor, time, description, activity } = agoravai[i];
-					
-					if (!(moment(currentdata).isSame(activity.startdate, 'day')) || i==0) {
+
+					if (!(moment(currentdata).isSame(activity.startdate, 'day')) || i == 0) {
 						var date = moment(activity.startdate).format('LL')
 						intermediario.push({ time: '', title: date, lineColor: 'black', circleColor: 'black', id: '-1' })
 						currentdata = activity.startdate
 					}
 					intermediario.push({ activity, description, title, time, lineColor, circleColor });
 					i++;
-				}while(i<agoravai.length)
+				} while (i < agoravai.length)
 
 			}
 			return intermediario
@@ -102,10 +102,10 @@ class Home extends React.Component {
 			)
 		}
 		return (
-			<View style={styles.container}>
-				<Provider>
-					<Portal>
 
+			<Provider>
+				<Portal>
+					<View style={styles.container}>
 						<Timeline
 							timeStyle={styles.time}
 							timeContainerStyle={{ minWidth: 40 }}
@@ -141,17 +141,9 @@ class Home extends React.Component {
 								}
 							}}
 						/>
-					</Portal>
-				</Provider>
-
-				{/* 
-				<FloatButton
-					onPress={() => this.props.navigation.navigate('NewActivity')}
-				/> */}
-
-
-
-			</View>
+					</View>
+				</Portal>
+			</Provider>
 		);
 	}
 }
@@ -210,7 +202,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingLeft: 5,
 		paddingRight: 5,
-		marginTop: 10,
+		paddingTop: 10,
 		backgroundColor: 'white'
 	},
 	list: {

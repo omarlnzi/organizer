@@ -86,7 +86,7 @@ class LoginScreen extends React.Component {
 
     return (
       <View>
-        <Text>{message}</Text>
+        <Text style={{color:'white', fontSize: 15}}>{message}</Text>
       </View>
     );
 
