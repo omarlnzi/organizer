@@ -16,23 +16,13 @@ export const loadActivities = () => {
       .orderByChild('startdate')
       .on('value', snapshot => {
         const ordered =[];
-        // console.log(snapshot)
       
         snapshot.forEach((child)=>{
-          
-       
-          // console.log(child.key);
           const id = child.key;
           const val =  child.val();
           val['id'] = id;
-          // console.log(typeof val)
           ordered.push(val)
-          // ordered[id].push()
-          
-          // console.log(childmerge)
         });
-        // console.log(ordered);
-        // const activities = snapshot.val();
         const action = setActivities(ordered);
         dispatch(action);
       })

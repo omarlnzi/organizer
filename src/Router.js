@@ -24,14 +24,14 @@ const AppNavigator = createStackNavigator({
       if (params && params.activityToEdit) {
 
         return {
-          title: "Editar Atividade",
+          title: `Editar ${params.activityToEdit.title}`,
           headerTitleStyle: {
             fontSize: 30,
           }
         }
       } else {
         return ({
-          title: 'Nova Categoria',
+          title: 'Nova Atividade',
 
           headerTitleStyle: {
             fontSize: 30,

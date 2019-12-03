@@ -25,6 +25,8 @@ class NewActivity extends React.Component {
 		this.props.loadCategories();
 		const { navigation, setAllActivityFields, resetActivityForm } = this.props;
 		const { params } = navigation.state;
+
+
 		if (params && params.activityToEdit) {
 			setAllActivityFields(params.activityToEdit);
 			this.setState({
@@ -42,14 +44,14 @@ class NewActivity extends React.Component {
 	renderDeleteButton() {
 		if (this.state.isEditing) {
 			const { activityToEdit } = this.props.navigation.state.params;
-
+		
 			return (
 				<View style={styles.contButton}>
 					<Button
 						title="Excluir"
 						color="#FF0004"
 						onPress={async () => {
-							console.log(activityToEdit)
+
 							const hasDeleted = await this.props.deleteActivity(activityToEdit);
 							if (hasDeleted) {
 								this.props.navigation.goBack();
@@ -72,18 +74,26 @@ class NewActivity extends React.Component {
 		}
 	}
 	// onSelect = data => {
-	// 	console.log(data)
+
 	// 	// this.setState(data)
 	// 	this.props.setActivityField('categoryid',data)
 
 	// }
 
+	dataComboSet=()=>{
+		if(this.props.categories){
+			return([...this.props.comboData, { label: 'Adicionar Categoria', value: 'new' }])
+		}else{
+			return([{ label: 'Adicionar Categoria', value: 'new' }])
+		}
+	}
+
 	render() {
 
 		const { setActivityField, activityForm, saveActivity, navigation } = this.props;
-		if (this.props.categories === null) {
-			return <ActivityIndicator />
-		}
+		// if (this.props.categories === null) {
+		// 	return <ActivityIndicator />
+		// }
 		return (
 
 			// <ScrollView nestedS	crollEnabled={true} style={{ paddingTop: 10 }}>
@@ -149,12 +159,15 @@ class NewActivity extends React.Component {
 					<View style={styles.categoria}>
 						<Text style={styles.label}>Categoria</Text>
 						<RNPickerSelect
-							items={[...this.props.comboData, { label: 'Adicionar Categoria', value: 'new' }]}
+							items={this.dataComboSet()}
 							placeholder={{ label: 'Selecione', value: 'default' }}
 							onValueChange={(value, index) => {
+
+								
 								if (value == 'new') {
 									this.props.navigation.navigate('NewCategory')
-								} else {
+								} else if(value !=='default'){
+											
 									setActivityField('categoryid', value)
 									this.setState({
 										colorSelected: this.getColor(value)
@@ -190,12 +203,12 @@ class NewActivity extends React.Component {
 							title='Salvar'
 							color='#008B8B'
 							onPress={async () => {
-								// console.log(activityForm)
+
 								if (activityForm.title == '' || activityForm.description == '') {
 									Alert.alert('Aviso', 'Verifique se todos os campos estão preenchidos')
 								} else if (activityForm.enddate == '' || activityForm.startdate == '') {
 									Alert.alert('Aviso', 'Escolha a data');
-								} else if (activityForm.categoryid == 'default' || activityForm.categoryid == '') {
+								} else if (activityForm.categoryid == 'default' || activityForm.categoryid == '' || activityForm.categoryid == 'new') {
 									Alert.alert('Aviso', 'Selecione uma categoria');
 								} else {
 									this.setState({ isLoading: true });
@@ -212,7 +225,7 @@ class NewActivity extends React.Component {
 						/>
 
 					</View>
-					{this.renderDeleteButton()}
+					{/* {this.renderDeleteButton()} */}
 
 				</View>
 			</ScrollView >

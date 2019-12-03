@@ -6,15 +6,19 @@ import { connect } from 'react-redux';
 import { loadCategories } from '../actions';
 
 class CategoryScreen extends React.Component {
-  componentDidMount(){
-		this.props.loadCategories();
-	}
+  componentDidMount() {
+    this.props.loadCategories();
+  }
 
   render() {
     // const { category } = this.props.navigation.state.params;
-    if(this.props.categories===null){
-			return <ActivityIndicator />
-		}
+    if (this.props.categories === null) {
+      return (
+        <AddCategory
+          onNavigate={() => this.props.navigation.navigate('NewCategory')}
+        />
+      )
+    }
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <FlatList
@@ -31,7 +35,7 @@ class CategoryScreen extends React.Component {
                 <ItemCategory
                   category={item}
                   onNavigate={() => this.props.navigation.navigate('NewCategory', { categoryToEdit: item })}
-                  // onNavigate={() => console.log("clicou")}
+
                 />
             );
           }}
@@ -46,18 +50,17 @@ class CategoryScreen extends React.Component {
 
 
 const mapStateToProps = state => {
-	const {listaCategorias} = state;
+  const { listaCategorias } = state;
 
-	if (listaCategorias === null){
-		return {categories: listaCategorias};
-	}
-  // console.log("sem id???????",listaCategorias)
-	const keys = Object.keys(listaCategorias);
-	const listaCategoriesWithId = keys.map(key =>{
-		return {...listaCategorias[key], id: key}
+  if (listaCategorias === null) {
+    return { categories: listaCategorias };
+  }
+  const keys = Object.keys(listaCategorias);
+  const listaCategoriesWithId = keys.map(key => {
+    return { ...listaCategorias[key], id: key }
   })
-  console.log(listaCategoriesWithId)
-	return {categories: listaCategoriesWithId}
+
+  return { categories: listaCategoriesWithId }
 }
 
-export default connect(mapStateToProps, {loadCategories})(CategoryScreen);
+export default connect(mapStateToProps, { loadCategories })(CategoryScreen);

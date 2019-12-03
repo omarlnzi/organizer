@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
   viewButtons:{
     // flex: 1,
     // alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
     justifyContent: 'center',
     flexDirection: "row"
   },

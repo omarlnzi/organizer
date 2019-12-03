@@ -46,7 +46,7 @@ class Home extends React.Component {
 	createData() {
 
 		if (this.props.categories && this.props.activities) {
-			console.log('chamou?????????????')
+
 			const activities = [...this.props.activities]
 			const keys = Object.keys(activities);
 			const agoravai = keys.map(key => {
@@ -114,11 +114,10 @@ class Home extends React.Component {
 							circleSize={20}
 							renderFullLine={true}
 							onEventPress={(event) => {
-								// console.log(event);
 
-								// console.log(this.props.timelineData)
 								// Alert.alert('clik')
 								if (event.id !== '-1') {
+									console.log(event.activity)
 									this.props.navigation.navigate('NewActivity', { activityToEdit: event.activity });
 								}
 
@@ -163,7 +162,7 @@ const mapStateToProps = state => {
 	const listaCategoriasWithId = keys2.map(key => {
 		return { ...listaCategorias[key], id: key }
 	})
-	// console.log(listaActivitiesWithId)
+
 	// const timelineData = this.createData();
 	return { activities: listaAtividades, categories: listaCategoriasWithId }
 }
@@ -210,3 +209,12 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 });
+
+
+// Datepicker.js  Warning componentWillReceiveProps
+//
+// componentDidUpdate(prevProps) { 
+// 	if (prevProps.date !== this.props.date) {
+// 		this.setState({date: this.getDate(this.props.date)});
+// 	}
+// }

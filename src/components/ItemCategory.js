@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'red',
     color: 'white',
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     alignItems: 'center',
